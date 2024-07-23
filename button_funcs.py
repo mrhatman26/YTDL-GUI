@@ -32,9 +32,10 @@ def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_v
         return
     ytdl_command = 'yt-dlp -o "' + str(widget_output_entry.get()) + '/%(title)s.%(ext)s"'
     if "playlist" in widget_link_entry.get():
-        playlist_var.set(1)
-        if messagebox.askyesno("Playlist Detected", "Link is a playlist, not a video. Would you like to download the whole playlist?") is False:
-            return
+        if bool(playlist_var) is False:
+            playlist_var.set(1)
+            if messagebox.askyesno("Playlist Detected", "Link is a playlist, not a video. Would you like to download the whole playlist?") is False:
+                return
     if bool(playlist_var.get()) is True:
         if "playlist" not in widget_link_entry.get():
             if messagebox.askyesno("Playlist Not Detected", "Link is NOT a playlist. Would you like to download only this video?") is False:
