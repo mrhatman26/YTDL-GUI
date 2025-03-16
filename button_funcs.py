@@ -51,7 +51,14 @@ def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_v
     ytdl_command = ytdl_command + " " + str(widget_link_entry.get())
     window.destroy()
     print(ytdl_command)
-    subprocess.run(ytdl_command)
+    try:
+        subprocess.run(ytdl_command)
+    except:
+        try:
+            ytdl_command = ytdl_command.replace("yt-dlp", "youtube-dl.exe")
+            subprocess.run(ytdl_command)
+        except Exception as e:
+            raise Exception("yt-dl not found and neither was youtube-dl. Are either installed on the PATH?\nActual exception was: " + str(e))
     temp_root = t.Tk()
     temp_root.withdraw()
     if messagebox.askyesno("Again?", "Download complete, would you like to reopen YTDL GUI?") is True:
