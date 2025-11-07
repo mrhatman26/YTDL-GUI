@@ -52,7 +52,7 @@ class MainApplicationLayout(t.Frame):
         self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file)
         #Buttons Frame
         self.button_frame = Frame(parent, False)
-        self.download_button = Button(self.button_frame, "Download", lambda: button_execute(self.link_entry, self.output_entry, self.playlist_value, self.audio_value, self.audio_format, parent), 21)
+        self.download_button = Button(self.button_frame, "Download", lambda: button_execute(self.link_entry, self.output_entry, self.playlist_value, self.audio_value, self.audio_format, self.cookie_use_value, self.cookie_file, parent), 21)
         self.update_downloader_button = Button(self.button_frame, "Update", button_update_downloader, 21)
         self.about_button = Button(self.button_frame, "About", button_about, 21)
         self.exit_button = Button(self.button_frame, "Exit", lambda: button_exit(parent), 21)

@@ -22,7 +22,7 @@ def button_file_select(widget_output_entry, output_entry):
         widget_output_entry.insert(0, str(file))
     output_entry.change_state('disabled')
 
-def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_var, audio_format, window):
+def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_var, audio_format, cookie_var, cookie_file, window):
     if str(widget_link_entry.get()) == "":
         show_error("Error", "No video or playlist link given.")
         return
@@ -48,8 +48,9 @@ def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_v
         if audio_format == "":
             show_message("Default Format", "No audio format was selected. Audio will be mp3")
             audio_format = "MP3"
-        #ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower()
-        ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower() + " --cookies cookies_test.txt"
+        ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower()
+    if bool(cookie_var.get()) is True:
+        ytdl_command = ytdl_command + " --cookies '" + cookie_file + "'"
     ytdl_command = ytdl_command + " " + str(widget_link_entry.get())
     window.destroy()
     print(ytdl_command)
