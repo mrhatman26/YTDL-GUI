@@ -10,7 +10,7 @@ def pause():
 def zlen(item):
     return len(item) - 1
 
-def load_file(include_filename=False, filetype_name="Text File", filetype_extension="*.txt"):
+def load_file(name_only=False, filetype_name="Text File", filetype_extension="*.txt"):
     window = t.Tk()
     window.withdraw()
     file = t.filedialog.askopenfile(mode="r", filetypes=[(filetype_name, filetype_extension)])
@@ -20,9 +20,11 @@ def load_file(include_filename=False, filetype_name="Text File", filetype_extens
         return None
     else:
         print("File selected: " + str(file.name))
-        if include_filename is True:
+        if name_only is True:
             print("Returning file and filename")
-            return (file, os.path.basename(file.name))
+            tup = (file.name, os.path.basename(file.name))
+            file.close()
+            return tup
         else:
             print("Returning file only")
             return file

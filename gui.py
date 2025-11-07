@@ -127,12 +127,8 @@ class MainApplicationLayout(t.Frame):
             button.configure(state="disabled")
 
     def change_cookies(self):
-        cookie_file = load_file(include_filename=True)
-        try:
-            cookie_file[0].close()
-            print("Good going bro")
-        except:
-            print("Oh no bro!")
+        cookie_file = load_file(name_only=True)
+        print(cookie_file)
 
 class AudioFormatBox(t.Frame):
     def __init__(self, main_app):
