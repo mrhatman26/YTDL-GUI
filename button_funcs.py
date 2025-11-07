@@ -2,8 +2,10 @@ import tkinter as t
 import sys, subprocess
 from tkinter.ttk import *
 from tkinter import messagebox, filedialog as f
+from misc import *
+
 def button_exit(window):
-    if messagebox.askquestion("Exit?", "Are you sure you want to exit?") == "yes":
+    if ask_question("Exit?", "Are you sure you want to exit?") is True:
         window.destroy()
         sys.exit()
     else:
@@ -22,50 +24,51 @@ def button_file_select(widget_output_entry, output_entry):
 
 def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_var, audio_format, window):
     if str(widget_link_entry.get()) == "":
-        messagebox.showerror("Error", "No video or playlist link given.")
+        show_error("Error", "No video or playlist link given.")
         return
     if str(widget_output_entry.get()) == "":
-        messagebox.showerror("Error", "No output directory selected.")
+        show_error("Error", "No output directory selected.")
         return
     if "playlist?" not in widget_link_entry.get() and "watch?" not in widget_link_entry.get():
-        messagebox.showerror("Invalid Link", "Link is not a YouTube video or playlist.")
+        show_error("Invalid Link", "Link is not a YouTube video or playlist.")
         return
     ytdl_command = 'yt-dlp -o "' + str(widget_output_entry.get()) + '/%(title)s.%(ext)s"'
     if "playlist" in widget_link_entry.get():
         if bool(playlist_var) is False:
             playlist_var.set(1)
-            if messagebox.askyesno("Playlist Detected", "Link is a playlist, not a video. Would you like to download the whole playlist?") is False:
+            if ask_question("Playlist Detected", "Link is a playlist, not a video. Would you like to download the whole playlist?") is False:
                 return
     if bool(playlist_var.get()) is True:
         if "playlist" not in widget_link_entry.get():
-            if messagebox.askyesno("Playlist Not Detected", "Link is NOT a playlist. Would you like to download only this video?") is False:
+            if ask_question("Playlist Not Detected", "Link is NOT a playlist. Would you like to download only this video?") is False:
                 return
         else:
             ytdl_command = ytdl_command + " --yes-playlist"
     if bool(audio_var.get()) is True:
         if audio_format == "":
-            messagebox.showinfo("Default Format", "No audio format was selected. Audio will be mp3")
+            show_message("Default Format", "No audio format was selected. Audio will be mp3")
             audio_format = "MP3"
-        ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower()
-        #Todo: Allow users to change the audio format
+        #ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower()
+        ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower() + " --cookies cookies_test.txt"
     ytdl_command = ytdl_command + " " + str(widget_link_entry.get())
     window.destroy()
     print(ytdl_command)
     try:
         subprocess.run(ytdl_command)
-    except:
+    except Exception as e:
+        print("yt-dlp not found, trying youtube-dl.exe instead\nActual exception was: " + str(e))
         try:
             ytdl_command = ytdl_command.replace("yt-dlp", "youtube-dl.exe")
             subprocess.run(ytdl_command)
         except Exception as e:
-            raise Exception("yt-dl not found and neither was youtube-dl. Are either installed on the PATH?\nActual exception was: " + str(e))
+            show_error("No Downloader", "Neither yt-dlp nor youtube-dl.exe were found. Are either on the System or User PATH?\nActual exception was: " + str(e))
     temp_root = t.Tk()
     temp_root.withdraw()
-    if messagebox.askyesno("Again?", "Download complete, would you like to reopen YTDL GUI?") is True:
+    if ask_question("Again?", "Download complete, would you like to reopen YTDL GUI?") is True:
         #subprocess.run("python main.py") #<- For when running as a Python Scripts
         subprocess.run("yt-dl-gui.exe") #<- For when running as an executeable.
     else:
-        messagebox.showinfo("Complete", "Thank you for using YTDL GUI")
+        show_message("Complete", "Thank you for using YTDL GUI")
     temp_root.destroy()
     sys.exit()
 
@@ -76,4 +79,23 @@ def button_about():
     message = message + "\n\nThis program was made using Python and uses the following libraries:\n-tkinter: For the GUI\n-sys: For exiting the program\n-subprocess: To run YT-DL"
     message = message + "\n\nCurrent Version: ?.?.? (I wasn't keeping track...)"
     #This is a stupid way to do messages, but whatever
-    messagebox.showinfo("About", message)
+    show_message("About", message)
+
+def button_update_downloader(window):
+    if ask_question("Update?", "Would you like to update YouTube Downloader?") is True:
+        try:
+            print("Updating yt-dlp...")
+            subprocess.run("yt-dlp -U")
+        except Exception as e:
+            print("yt-dlp not found, trying youtube-dl.exe instead\nActual exception was: " + str(e))
+            try:
+                print("Updating youtube-dl.exe...")
+                subprocess.run("youtube-dl.exe -U")
+            except Exception as e:
+                show_error("No Downloader", "Neither yt-dlp nor youtube-dl.exe were found. Are either on the System or User PATH?\nActual exception was: " + str(e))
+                return
+            show_message("Updated", "youtube-dl.exe was updated")
+            return
+        show_message("Updated", "yt-dlp was updated")
+    else:
+        return

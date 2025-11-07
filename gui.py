@@ -2,7 +2,7 @@ import tkinter as t
 from tkinter.ttk import *
 from widgets import *
 from tkinter import messagebox
-from button_funcs import button_exit, button_file_select, button_execute, button_about
+from button_funcs import button_exit, button_file_select, button_execute, button_about, button_update_downloader
 class MainWindow(t.Tk):
     def __init__(self, resolution, title):
         t.Tk.__init__(self)
@@ -41,9 +41,11 @@ class MainApplicationLayout(t.Frame):
         self.audio_format = ""
         self.button_frame = Frame(parent, False)
         self.download_button = Button(self.button_frame, "Download", lambda: button_execute(self.link_entry, self.output_entry, self.playlist_value, self.audio_value, self.audio_format, parent), 21)
+        self.update_downloader_button = Button(self.button_frame, "Update", lambda: button_update_downloader(parent), 21)
         self.about_button = Button(self.button_frame, "About", button_about, 21)
         self.exit_button = Button(self.button_frame, "Exit", lambda: button_exit(parent), 21)
         self.audio_button_state()
+        self.parent.protocol("WM_DELETE_WINDOW", lambda: button_exit(parent))
         self.pack_all()
         
 
@@ -70,6 +72,7 @@ class MainApplicationLayout(t.Frame):
         self.checkbox_frame.pack(pady=5)
         #Buttons Frame
         self.download_button.pack(pady=5)
+        self.update_downloader_button.pack(pady=5)
         self.about_button.pack()
         self.exit_button.pack(pady=5)
         self.button_frame.pack()
