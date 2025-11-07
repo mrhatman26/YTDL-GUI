@@ -45,7 +45,7 @@ class MainApplicationLayout(t.Frame):
         self.cookie_top_frame = Frame(self.cookie_frame, False)
         self.cookie_use_label = Label(self.cookie_top_frame, "Use Cookies?:")
         self.cookie_use_value = t.IntVar()
-        self.cookie_use_checkbox = Checkbutton(self.cookie_top_frame, self.cookie_use_value, lambda: self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file))
+        self.cookie_use_checkbox = Checkbutton(self.cookie_top_frame, self.cookie_use_value, self.swap_cookie_usage)
         self.cookie_bottom_frame = Frame(self.cookie_frame, False)
         self.cookie_load_button = Button(self.cookie_bottom_frame, "Load Cookies", self.change_cookies, 11)
         self.cookie_file_label = Label(self.cookie_bottom_frame, "No Cookies")
@@ -127,8 +127,15 @@ class MainApplicationLayout(t.Frame):
             button.configure(state="disabled")
 
     def change_cookies(self):
-        cookie_file = load_file(name_only=True)
-        print(cookie_file)
+        cookie_info = load_file(name_only=True)
+        self.cookie_file = cookie_info[0]
+        self.cookie_file_label.config(text="Cookie File: " + cookie_info[1])
+
+    def swap_cookie_usage(self):
+        self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file)
+        if self.cookie_use_value.get() == 0:
+            self.cookie_file = ""
+            self.cookie_file_label.config(text="No Cookies")
 
 class AudioFormatBox(t.Frame):
     def __init__(self, main_app):
