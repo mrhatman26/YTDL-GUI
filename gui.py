@@ -1,8 +1,8 @@
 import tkinter as t
 from tkinter.ttk import *
 from widgets import *
-from tkinter import messagebox
-from button_funcs import button_exit, button_file_select, button_execute, button_about, button_update_downloader
+from button_funcs import button_exit, button_file_select, button_execute, button_about, button_update_downloader, button_load_cookies
+from misc import show_warning
 class MainWindow(t.Tk):
     def __init__(self, resolution, title):
         t.Tk.__init__(self)
@@ -32,19 +32,30 @@ class MainApplicationLayout(t.Frame):
         self.playlist_value = t.IntVar()
         self.playlist_checkbox = Checkbutton(self.playlist_frame, self.playlist_value)
         ##Audio
+        self.audio_format = ""
         self.audio_frame = Frame(self.checkbox_frame, False)
         self.audio_label = Label(self.audio_frame, "Audio Only?")
         self.audio_value = t.IntVar()
-        self.audio_checkbox = Checkbutton(self.audio_frame, self.audio_value, self.audio_button_state)
         self.audio_select_button = Button(self.checkbox_frame, "Audio Format", lambda: self.change_a_form(True), 11)
+        self.audio_checkbox = Checkbutton(self.audio_frame, self.audio_value, lambda: self.match_button_state(self.audio_select_button, self.audio_value, edit_value=self.audio_format))
+        self.match_button_state(self.audio_select_button, self.audio_value, edit_value=self.audio_format)
+        ##Cookies
+        self.cookie_file = ""
+        self.cookie_frame = Frame(parent, True)
+        self.cookie_top_frame = Frame(self.cookie_frame, False)
+        self.cookie_use_label = Label(self.cookie_top_frame, "Use Cookies?:")
+        self.cookie_use_value = t.IntVar()
+        self.cookie_use_checkbox = Checkbutton(self.cookie_top_frame, self.cookie_use_value, lambda: self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file))
+        self.cookie_bottom_frame = Frame(self.cookie_frame, False)
+        self.cookie_load_button = Button(self.cookie_bottom_frame, "Load Cookies", button_load_cookies, 11)
+        self.cookie_file_label = Label(self.cookie_bottom_frame, "No Cookies")
+        self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file)
         #Buttons Frame
-        self.audio_format = ""
         self.button_frame = Frame(parent, False)
         self.download_button = Button(self.button_frame, "Download", lambda: button_execute(self.link_entry, self.output_entry, self.playlist_value, self.audio_value, self.audio_format, parent), 21)
-        self.update_downloader_button = Button(self.button_frame, "Update", lambda: button_update_downloader(parent), 21)
+        self.update_downloader_button = Button(self.button_frame, "Update", button_update_downloader, 21)
         self.about_button = Button(self.button_frame, "About", button_about, 21)
         self.exit_button = Button(self.button_frame, "Exit", lambda: button_exit(parent), 21)
-        self.audio_button_state()
         self.parent.protocol("WM_DELETE_WINDOW", lambda: button_exit(parent))
         self.pack_all()
         
@@ -70,6 +81,14 @@ class MainApplicationLayout(t.Frame):
         self.audio_frame.pack(side=t.LEFT)
         self.audio_select_button.pack(side=t.RIGHT)
         self.checkbox_frame.pack(pady=5)
+        #Cookie Frame
+        self.cookie_use_label.pack(side=t.LEFT)
+        self.cookie_use_checkbox.pack(side=t.RIGHT)
+        self.cookie_top_frame.pack(pady=3)
+        self.cookie_load_button.pack(side=t.TOP)
+        self.cookie_file_label.pack(side=t.BOTTOM)
+        self.cookie_bottom_frame.pack()
+        self.cookie_frame.pack()
         #Buttons Frame
         self.download_button.pack(pady=5)
         self.update_downloader_button.pack(pady=5)
@@ -84,7 +103,10 @@ class MainApplicationLayout(t.Frame):
         self.playlist_checkbox.configure(state=new_state)
         self.audio_checkbox.configure(state=new_state)
         self.audio_select_button.configure(state=new_state)
+        self.cookie_use_checkbox.configure(state=new_state)
+        self.cookie_load_button.configure(state=new_state)
         self.download_button.configure(state=new_state)
+        self.update_downloader_button.configure(state=new_state)
         self.about_button.configure(state=new_state)
         self.exit_button.configure(state=new_state)
 
@@ -97,12 +119,13 @@ class MainApplicationLayout(t.Frame):
             self.audio_format = new_form
             print(self.audio_format)
 
-    def audio_button_state(self):
-        if bool(self.audio_value.get()) is True:
-            self.audio_select_button.configure(state="normal")
+    def match_button_state(self, button, value, edit_value=None):
+        if bool(value.get()) is True:
+            button.configure(state="normal")
         else:
-            self.audio_format = ""
-            self.audio_select_button.configure(state="disabled")
+            if edit_value is not None:
+                edit_value = ""
+            button.configure(state="disabled")
 
 class AudioFormatBox(t.Frame):
     def __init__(self, main_app):
@@ -127,5 +150,5 @@ class AudioFormatBox(t.Frame):
         main_app.change_a_form(False, new_format)
 
     def prevent_exit(self):
-        messagebox.showwarning("Warning!", "Please select an audio format!")
+        show_warning("Warning!", "Please select an audio format!")
 

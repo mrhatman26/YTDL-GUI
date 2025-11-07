@@ -73,15 +73,16 @@ def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_v
     sys.exit()
 
 def button_about():
+    print(load_file(True))
     message = "This was a program made by MrHatman26, AKA nobody important."
     message = message + "\n\nWhat is this?: This is a tool to automate the usage of the yt-dl app by entering the command and parameters for you so you don't need to remember it all."
     message = message + "\nBecause of this, this tool requires that yt-dl be installed on your system."
     message = message + "\n\nThis program was made using Python and uses the following libraries:\n-tkinter: For the GUI\n-sys: For exiting the program\n-subprocess: To run YT-DL"
-    message = message + "\n\nCurrent Version: ?.?.? (I wasn't keeping track...)"
+    message = message + "\n\nCurrent Version: 1.2.0"
     #This is a stupid way to do messages, but whatever
     show_message("About", message)
 
-def button_update_downloader(window):
+def button_update_downloader():
     if ask_question("Update?", "Would you like to update YouTube Downloader?") is True:
         try:
             print("Updating yt-dlp...")
@@ -99,3 +100,6 @@ def button_update_downloader(window):
         show_message("Updated", "yt-dlp was updated")
     else:
         return
+
+def button_load_cookies():
+    pass

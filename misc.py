@@ -1,6 +1,6 @@
 import tkinter as t
 import random as r
-import platform, os, json
+import os
 from tkinter import filedialog as f
 from tkinter import messagebox
 
@@ -10,17 +10,22 @@ def pause():
 def zlen(item):
     return len(item) - 1
 
-def load_file():
+def load_file(filename_only=False, filetype_name="Text File", filetype_extension="*.txt"):
     window = t.Tk()
     window.withdraw()
-    file = t.filedialog.askopenfile(mode="r", filetypes=[("Text File", "*.txt")])
+    file = t.filedialog.askopenfile(mode="r", filetypes=[(filetype_name, filetype_extension)])
     window.destroy()
     if file is None:
         print("No file selected")
         return None
     else:
         print("File selected: " + str(file.name))
-        return file
+        if filename_only is True:
+            print("Returning filename only")
+            return os.path.basename(file.name)
+        else:
+            print("Returning path and filename")
+            return file
 
 def save_file(data):
     window = t.Tk()
