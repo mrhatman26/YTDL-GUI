@@ -1,8 +1,8 @@
 import tkinter as t
 from tkinter.ttk import *
 from widgets import *
-from button_funcs import button_exit, button_file_select, button_execute, button_about, button_update_downloader, button_load_cookies
-from misc import show_warning
+from button_funcs import button_exit, button_file_select, button_execute, button_about, button_update_downloader
+from misc import show_warning, load_file
 class MainWindow(t.Tk):
     def __init__(self, resolution, title):
         t.Tk.__init__(self)
@@ -47,7 +47,7 @@ class MainApplicationLayout(t.Frame):
         self.cookie_use_value = t.IntVar()
         self.cookie_use_checkbox = Checkbutton(self.cookie_top_frame, self.cookie_use_value, lambda: self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file))
         self.cookie_bottom_frame = Frame(self.cookie_frame, False)
-        self.cookie_load_button = Button(self.cookie_bottom_frame, "Load Cookies", button_load_cookies, 11)
+        self.cookie_load_button = Button(self.cookie_bottom_frame, "Load Cookies", self.change_cookies, 11)
         self.cookie_file_label = Label(self.cookie_bottom_frame, "No Cookies")
         self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file)
         #Buttons Frame
@@ -57,8 +57,7 @@ class MainApplicationLayout(t.Frame):
         self.about_button = Button(self.button_frame, "About", button_about, 21)
         self.exit_button = Button(self.button_frame, "Exit", lambda: button_exit(parent), 21)
         self.parent.protocol("WM_DELETE_WINDOW", lambda: button_exit(parent))
-        self.pack_all()
-        
+        self.pack_all()        
 
     def pack_all(self):
         #Input Frame
@@ -126,6 +125,14 @@ class MainApplicationLayout(t.Frame):
             if edit_value is not None:
                 edit_value = ""
             button.configure(state="disabled")
+
+    def change_cookies(self):
+        cookie_file = load_file(include_filename=True)
+        try:
+            cookie_file[0].close()
+            print("Good going bro")
+        except:
+            print("Oh no bro!")
 
 class AudioFormatBox(t.Frame):
     def __init__(self, main_app):

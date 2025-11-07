@@ -100,6 +100,3 @@ def button_update_downloader():
         show_message("Updated", "yt-dlp was updated")
     else:
         return
-
-def button_load_cookies():
-    pass
