@@ -9,6 +9,5 @@ Note: If youtube-dl itself has any errors or fails to download a video, the GUI 
 I should probably fix that...
 
 To Do:\
--Add option to load cookies to allow for downloading of age restricted videos.\
--Add option to use custom yt-dl.exe in case the file is not in the PATH or cannot be found for some other reason.\
--Make it so the program keeps the last directory selected when the user doesn't select one (As of now, it replaces the directory with a blank string).
+-Add option to use custom yt-dl.exe in case the file is not in the PATH or cannot be found for some other reason.
+-Add option to select video format like with the audio format.
