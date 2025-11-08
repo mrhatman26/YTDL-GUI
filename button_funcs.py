@@ -50,7 +50,7 @@ def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_v
             audio_format = "MP3"
         ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower()
     if bool(cookie_var.get()) is True:
-        ytdl_command = ytdl_command + " --cookies '" + cookie_file + "'"
+        ytdl_command = ytdl_command + ' --cookies "' + cookie_file + '"'
     ytdl_command = ytdl_command + " " + str(widget_link_entry.get())
     window.destroy()
     print(ytdl_command)
