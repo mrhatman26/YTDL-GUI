@@ -49,8 +49,13 @@ def button_execute(widget_link_entry, widget_output_entry, playlist_var, audio_v
             show_message("Default Format", "No audio format was selected. Audio will be mp3")
             audio_format = "MP3"
         ytdl_command = ytdl_command + " --extract-audio --audio-format " + audio_format.lower()
+    else:
+        ytdl_command = ytdl_command + " --format mp4"
     if bool(cookie_var.get()) is True:
-        ytdl_command = ytdl_command + ' --cookies "' + cookie_file + '"'
+        if cookies_file == "":
+            show_message("No Cookies", "No cookie file was selected. Cookies will not be used")
+        else:
+            ytdl_command = ytdl_command + ' --cookies "' + cookie_file + '"'
     ytdl_command = ytdl_command + " " + str(widget_link_entry.get())
     window.destroy()
     print(ytdl_command)

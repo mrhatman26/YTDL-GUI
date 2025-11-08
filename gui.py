@@ -128,8 +128,12 @@ class MainApplicationLayout(t.Frame):
 
     def change_cookies(self):
         cookie_info = load_file(name_only=True)
-        self.cookie_file = cookie_info[0]
-        self.cookie_file_label.config(text="Cookie File: " + cookie_info[1])
+        if cookie_info is not None:
+            self.cookie_file = cookie_info[0]
+            self.cookie_file_label.config(text="Cookie File: " + cookie_info[1])
+        else:
+            self.cookie_file = ""
+            self.cookie_file_label.config(text="No Cookies")
 
     def swap_cookie_usage(self):
         self.match_button_state(self.cookie_load_button, self.cookie_use_value, edit_value=self.cookie_file)
